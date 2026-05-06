@@ -149,6 +149,19 @@ export default function App() {
     recognition.start();
   };
 
+  const handleSignIn = async () => {
+    try {
+      await signIn();
+    } catch (error: any) {
+      console.error("Login Error:", error);
+      if (error.code === 'auth/unauthorized-domain') {
+        alert("This domain is not authorized in Firebase. Please add it to 'Authorized Domains' in the Firebase Console.");
+      } else {
+        alert("Login failed: " + error.message);
+      }
+    }
+  };
+
   if (!user) {
     return (
       <div className="min-h-screen aura-bg flex items-center justify-center p-4">
@@ -163,7 +176,7 @@ export default function App() {
           <h1 className="text-3xl font-bold mb-2">Aura</h1>
           <p className="text-gray-400 mb-8">Your intelligent task companion.</p>
           <button 
-            onClick={signIn}
+            onClick={handleSignIn}
             className="w-full bg-white text-black font-semibold py-3 px-6 rounded-xl hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
           >
             Sign in with Google
