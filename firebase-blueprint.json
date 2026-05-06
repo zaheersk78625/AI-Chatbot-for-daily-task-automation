@@ -1,0 +1,42 @@
+{
+  "entities": {
+    "Task": {
+      "title": "Task",
+      "description": "A user's to-do item or reminder",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "completed"] },
+        "type": { "type": "string", "enum": ["task", "reminder"] },
+        "dueDate": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "userId": { "type": "string" }
+      },
+      "required": ["title", "status", "type", "createdAt", "userId"]
+    },
+    "ChatHistory": {
+      "title": "Chat Message",
+      "description": "A message in the conversation history",
+      "type": "object",
+      "properties": {
+        "role": { "type": "string", "enum": ["user", "model"] },
+        "content": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "userId": { "type": "string" }
+      },
+      "required": ["role", "content", "timestamp", "userId"]
+    }
+  },
+  "firestore": {
+    "/tasks/{taskId}": {
+      "schema": "Task",
+      "description": "Collection of tasks and reminders"
+    },
+    "/chat_history/{messageId}": {
+      "schema": "ChatHistory",
+      "description": "Conversation logs with the assistant"
+    }
+  }
+}

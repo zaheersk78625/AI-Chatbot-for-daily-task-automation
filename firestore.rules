@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidTask(data) {
+      return data.title is string && data.title.size() <= 200 &&
+             data.status in ['pending', 'completed'] &&
+             data.type in ['task', 'reminder'] &&
+             data.userId == request.auth.uid;
+    }
+
+    // Tasks rules
+    match /tasks/{taskId} {
+      allow list, get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidTask(request.resource.data);
+      allow update: if isSignedIn() && isOwner(resource.data.userId) && isValidTask(request.resource.data);
+      allow delete: if isSignedIn() && isOwner(resource.data.userId);
+    }
+
+    // Chat History rules
+    match /chat_history/{messageId} {
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+    }
+  }
+}

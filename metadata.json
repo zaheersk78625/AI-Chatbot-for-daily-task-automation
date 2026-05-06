@@ -1,0 +1,6 @@
+{
+  "name": "Aura Task Assistant",
+  "description": "An AI-powered daily assistant that manages tasks, reminders, and automates your day through natural language and voice.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["AI Chat", "Task Management", "Voice Commands"]
+}
